@@ -1,0 +1,107 @@
+/* 
+
+
+
+BASE STYLES
+
+
+
+*/
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "avenir next", avenir,
+    "helvetica neue", helvetica, ubuntu, roboto, noto, "segoe ui", arial,
+    sans-serif;
+  line-height: 1.5;
+  margin: 0;
+}
+
+
+
+
+/* Resets */
+
+/* Resets on Element that bring a lot of styling */
+
+/* 
+
+// Reset Button
+// -------------------------
+// In an article on CSS-Tricks
+// (http://css-tricks.com/use-button-element/),
+// Chris Coyier explains that:
+// "if a button doesn’t have a meaningful
+// href, it’s a <button>"; which makes sense.
+
+*/
+button {
+  cursor: pointer;
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+button:active {
+  outline: 0;
+}
+
+
+
+
+/* 
+
+Remove base padding, margin, and font style
+from elements who bring their own 
+
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+figure,
+ol,
+ul,
+caption,
+dl,
+dt,
+dd,
+ol,
+ul,
+li {
+  margin: 0;
+  padding: 0;
+}
+
+
+
+
+
+/* 
+
+Overriding default iOS input style
+
+ */
+
+input {
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+
+
+
+/* 
+
+Responsive Images
+
+*/
+
+img { max-width: 100%; height: auto; }
