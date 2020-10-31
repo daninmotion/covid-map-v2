@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { jsx, ThemeProvider, Box, Heading, Select, Flex, Text, Card } from 'theme-ui';
 import { useSpring, animated } from 'react-spring';
 
@@ -12,21 +12,87 @@ function App() {
 
   //Animation
   const AnimatedCard = animated(Card);
+  const AnimatedText = animated(Text);
+  const AnimatedHeading = animated(Heading);
   const AnimatedSVGIcon = animated(SVGIcon);
 
-  const [toggle, setToggle] = useState(!true);
+  const [toggle, setToggle] = useState(false);
+  const [toggle2, setToggle2] = useState(false);
+  const [toggle3, setToggle3] = useState(false);
+
+  const [casesType, setCasesType] = useState('total');
 
   const { x, color, fill, backgroundColor } = useSpring({ 
-    from: { x: 1 }, x: toggle ? 1.2 : 1,
-    color: toggle ? '#FF8B1A' : '#ADADAD',
-    backgroundColor: toggle ? '#FAF2EA' : '#2C2C31',
-    fill: toggle ? '#FF8B1A' : '#ADADAD',
+    from: { x: 1 }, x: toggle && casesType === 'total' ? 1.2 : 1,
+    color: toggle && casesType === 'total' ? '#FF8B1A' : '#ADADAD',
+    backgroundColor: toggle && casesType === 'total' ? '#FAF2EA' : '#2C2C31',
+    fill: toggle && casesType === 'total' ? '#FF8B1A' : '#ADADAD',
   });
 
+  const { x2, color2, fill2, backgroundColor2 } = useSpring({ 
+    from: { x2: 1 }, x2: toggle2 && casesType === 'recovered' ? 1.2 : 1,
+    color2: toggle2 && casesType === 'recovered' ? '#01CB30' : '#ADADAD',
+    backgroundColor2: toggle2 && casesType === 'recovered' ? '#E9FCED' : '#2C2C31',
+    fill2: toggle2 && casesType === 'recovered' ? '#01CB30' : '#ADADAD'
+  });
+
+  const { x3, color3, fill3, backgroundColor3 } = useSpring({ 
+    from: { x3: 1 }, x3: toggle3 && casesType === 'deaths' ? 1.2 : 1,
+    color3: toggle3 && casesType === 'deaths' ? '#FF1A1A' : '#ADADAD',
+    backgroundColor3: toggle3 && casesType === 'deaths' ? '#ECD9D9' : '#2C2C31',
+    fill3: toggle3 && casesType === 'deaths' ? '#FF1A1A' : '#ADADAD'
+  });
+
+  //General
   const onClickAnimateCard1 = () => {
     setToggle(!toggle);
-    console.log(toggle);
+    // console.log('card 1:' + toggle);
+    setToggle2(false);
+    setToggle3(false);
+
+    setCasesType('total');
+    // console.log(casesType);
   }
+
+  const onClickAnimateCard2 = () => {
+    setToggle2(!toggle2);
+    // console.log('card 2:' + toggle);
+    setToggle(false);
+    setToggle3(false);
+
+    setCasesType('recovered');
+    // console.log(casesType);
+  }
+
+  const onClickAnimateCard3 = () => {
+    setToggle3(!toggle3);
+    // console.log('card 3:' + toggle);
+    setToggle(false);
+    setToggle2(false);
+
+    setCasesType('deaths');
+    // console.log(casesType);
+  }
+
+  // const onClickSetCasesTypeTotal = () => {
+  //   setCasesType('total');
+  //   console.log(casesType);
+  // }
+
+  // const onClickSetCasesTypeRecovered = () => {
+  //   setCasesType('recovered');
+  //   console.log(casesType);
+  // }
+
+  // const onClickSetCasesTypeDeaths = () => {
+  //   setCasesType('deaths');
+  //   console.log(casesType);
+  // }
+
+  console.log('card 1: ' + toggle)
+  console.log('card 2: ' + toggle2)
+  console.log('card 3: ' + toggle3)
+  console.log('casesType: ' + casesType)
 
   return (
     <ThemeProvider theme={theme}>
@@ -84,39 +150,57 @@ function App() {
                   name='icon-virus'
                   fill={fill}
                 />
-                <Text sx={{ alignSelf: 'center', marginLeft: '8px' }} variant='text.caption-1'>Total Cases</Text>
+                <AnimatedText sx={{ alignSelf: 'center', marginLeft: '8px' }} variant='text.caption-1'>Total Cases</AnimatedText>
               </Box>
-              <Heading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>+3.2m</Heading>
+              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>+3.2m</AnimatedHeading>
             </Box>
           </AnimatedCard>
           
-          <AnimatedCard sx={{ marginLeft: 4}} variant='cards.primary'>
+          <AnimatedCard
+            onClick={ ()=> onClickAnimateCard2() }
+            sx={{ marginLeft: 4}} 
+            variant='cards.primary'
+            style={{
+              transform: x2.interpolate(x2 => `scale(${x2})`),
+              color: color2,
+              backgroundColor: backgroundColor2
+            }}
+          >
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Box sx={{ display: 'flex' }}>
-                <SVGIcon 
+                <AnimatedSVGIcon 
                   width='18px'
                   height='18px'
                   name='icon-heart'
-                  fill='#ADADAD'
+                  fill={fill2}
                 />
-                <Text sx={{ alignSelf: 'center', marginLeft: '8px' }} variant='text.caption-1'>Recovered</Text>
+                <AnimatedText sx={{ alignSelf: 'center', marginLeft: '8px' }} variant='text.caption-1'>Recovered</AnimatedText>
               </Box>
-              <Heading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>+12.5k</Heading>
+              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>+12.5k</AnimatedHeading>
             </Box>
           </AnimatedCard>
           
-          <AnimatedCard sx={{ marginLeft: 4}} variant='cards.primary'>
+          <AnimatedCard
+            onClick={ ()=> onClickAnimateCard3() }
+            sx={{ marginLeft: 4}} 
+            variant='cards.primary'
+            style={{
+              transform: x3.interpolate(x3 => `scale(${x3})`),
+              color: color3,
+              backgroundColor: backgroundColor3
+            }}
+          >
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Box sx={{ display: 'flex' }}>
-                <SVGIcon 
+                <AnimatedSVGIcon 
                   width='18px'
                   height='18px'
                   name='icon-x'
-                  fill='#ADADAD'
+                  fill={fill3}
                 />
-                <Text sx={{ alignSelf: 'center', marginLeft: '8px' }} variant='text.caption-1'>Deaths</Text>
+                <AnimatedText sx={{ alignSelf: 'center', marginLeft: '8px' }} variant='text.caption-1'>Deaths</AnimatedText>
               </Box>
-              <Heading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>+2.3k</Heading>
+              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>+2.3k</AnimatedHeading>
             </Box>
           </AnimatedCard>
         </Box>
