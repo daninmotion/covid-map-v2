@@ -9,6 +9,8 @@ import './base.css';
 import SVGIcon from './components/Icons/index';
 
 function App() {
+  const [countries, setCountries] = useState([]);
+  const [country, setCountry] = useState('Worldwide');
 
   //Animation
   const AnimatedCard = animated(Card);
@@ -46,17 +48,14 @@ function App() {
   //General
   const onClickAnimateCard1 = () => {
     setToggle(!toggle);
-    // console.log('card 1:' + toggle);
     setToggle2(false);
     setToggle3(false);
 
     setCasesType('total');
-    // console.log(casesType);
   }
 
   const onClickAnimateCard2 = () => {
     setToggle2(!toggle2);
-    // console.log('card 2:' + toggle);
     setToggle(false);
     setToggle3(false);
 
@@ -66,13 +65,30 @@ function App() {
 
   const onClickAnimateCard3 = () => {
     setToggle3(!toggle3);
-    // console.log('card 3:' + toggle);
     setToggle(false);
     setToggle2(false);
 
     setCasesType('deaths');
-    // console.log(casesType);
   }
+
+  useEffect(() => {
+    const getCountriesData = async () => {
+      await fetch ("https://disease.sh/v3/covid-19/countries")
+      .then((response) => response.json())
+      .then((data) => {
+        const countries = data.map((country) => {
+          return (
+            {
+              name: country.country,
+              value: country.countryInfo.iso2
+            }
+          )
+        })
+        setCountries(countries);
+      })
+    }
+    getCountriesData();
+  }, []);
 
   // const onClickSetCasesTypeTotal = () => {
   //   setCasesType('total');
@@ -89,10 +105,10 @@ function App() {
   //   console.log(casesType);
   // }
 
-  console.log('card 1: ' + toggle)
-  console.log('card 2: ' + toggle2)
-  console.log('card 3: ' + toggle3)
-  console.log('casesType: ' + casesType)
+  // console.log('card 1: ' + toggle)
+  // console.log('card 2: ' + toggle2)
+  // console.log('card 3: ' + toggle3)
+  // console.log('casesType: ' + casesType)
 
   return (
     <ThemeProvider theme={theme}>
@@ -110,10 +126,13 @@ function App() {
               display: 'none'
             }
           }}>
-            <Select variant='forms.select.ghost' defaultValue='WorldWide'>
-              <option>WorldWide</option>
-              <option>USA</option>
-              <option>Ukraine</option>
+            <Select variant='forms.select.ghost' defaultValue={country}>
+              <option>{country}</option>
+              {countries.map((country) => {
+                return (
+                  <option>{country.name}</option>
+                );
+              })}
             </Select>
           </Box>
           <SVGIcon 
