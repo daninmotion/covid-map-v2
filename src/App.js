@@ -11,6 +11,7 @@ import SVGIcon from './components/Icons/index';
 function App() {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState('Worldwide');
+  const [countryInfo, setCountryInfo] = useState({});
 
   //Animation
   const AnimatedCard = animated(Card);
@@ -45,7 +46,6 @@ function App() {
     fill3: toggle3 && casesType === 'deaths' ? '#FF1A1A' : '#ADADAD'
   });
 
-  //General
   const onClickAnimateCard1 = () => {
     setToggle(!toggle);
     setToggle2(false);
@@ -71,6 +71,15 @@ function App() {
     setCasesType('deaths');
   }
 
+  //General
+  useEffect(() => {
+    fetch('https://disease.sh/v3/covid-19/all')
+    .then((response) => response.json())
+    .then((data) => {
+      setCountryInfo(data);
+    });
+  }, []);
+
   useEffect(() => {
     const getCountriesData = async () => {
       await fetch ("https://disease.sh/v3/covid-19/countries")
@@ -89,6 +98,21 @@ function App() {
     }
     getCountriesData();
   }, []);
+
+  const onCountryChange = async (event) => {
+    const countryCode = event.target.value;
+
+    const url = countryCode === 'WorldWide' ? 'https://disease.sh/v3/covid-19/all' : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
+
+    await fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      setCountry(countryCode);
+      setCountryInfo(data);
+    })
+  }
+
+  console.log(countryInfo);
 
   // const onClickSetCasesTypeTotal = () => {
   //   setCasesType('total');
@@ -126,11 +150,15 @@ function App() {
               display: 'none'
             }
           }}>
-            <Select variant='forms.select.ghost' defaultValue={country}>
+            <Select
+              onChange={onCountryChange}
+              variant='forms.select.ghost' 
+              defaultValue={country}
+            >
               <option>{country}</option>
               {countries.map((country) => {
                 return (
-                  <option>{country.name}</option>
+                  <option key={country.name} value={country.value}>{country.name}</option>
                 );
               })}
             </Select>
@@ -171,7 +199,7 @@ function App() {
                 />
                 <AnimatedText sx={{ alignSelf: 'center', marginLeft: '8px' }} variant='text.caption-1'>Total Cases</AnimatedText>
               </Box>
-              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>+3.2m</AnimatedHeading>
+              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>{countryInfo.cases}</AnimatedHeading>
             </Box>
           </AnimatedCard>
           
@@ -195,7 +223,7 @@ function App() {
                 />
                 <AnimatedText sx={{ alignSelf: 'center', marginLeft: '8px' }} variant='text.caption-1'>Recovered</AnimatedText>
               </Box>
-              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>+12.5k</AnimatedHeading>
+              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>{countryInfo.recovered}</AnimatedHeading>
             </Box>
           </AnimatedCard>
           
@@ -219,7 +247,7 @@ function App() {
                 />
                 <AnimatedText sx={{ alignSelf: 'center', marginLeft: '8px' }} variant='text.caption-1'>Deaths</AnimatedText>
               </Box>
-              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>+2.3k</AnimatedHeading>
+              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>{countryInfo.deaths}</AnimatedHeading>
             </Box>
           </AnimatedCard>
         </Box>
