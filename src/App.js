@@ -2,8 +2,10 @@
 import { useState, useEffect } from 'react';
 import { jsx, ThemeProvider, Box, Heading, Select, Flex, Text, Card } from 'theme-ui';
 import { useSpring, animated } from 'react-spring';
+import 'leaflet/dist/leaflet.css';
 
 //Relative path imports
+import WorldMap from './components/WorldMap/index';
 import theme from './theme';
 import './base.css';
 import SVGIcon from './components/Icons/index';
@@ -12,6 +14,8 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState('Worldwide');
   const [countryInfo, setCountryInfo] = useState({});
+  const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
+  const [mapZoom, setMapZoom] = useState(3);
 
   //Animation
   const AnimatedCard = animated(Card);
@@ -109,6 +113,8 @@ function App() {
     .then(data => {
       setCountry(countryCode);
       setCountryInfo(data);
+      setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
+      setMapZoom(4);
     })
   }
 
@@ -250,6 +256,16 @@ function App() {
               <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>{countryInfo.deaths}</AnimatedHeading>
             </Box>
           </AnimatedCard>
+        </Box>
+        <Box
+          sx={{
+            marginTop: 4
+          }}
+        >
+          <WorldMap 
+            center={mapCenter}
+            zoom={mapZoom}
+          />
         </Box>
       </Box>
     </ThemeProvider>
