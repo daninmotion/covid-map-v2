@@ -9,6 +9,7 @@ import WorldMap from './components/WorldMap/index';
 import theme from './theme';
 import './base.css';
 import SVGIcon from './components/Icons/index';
+import {prettyPrintStat} from './helpers/index';
 
 function App() {
   const [countries, setCountries] = useState([]);
@@ -16,6 +17,8 @@ function App() {
   const [countryInfo, setCountryInfo] = useState({});
   const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
   const [mapZoom, setMapZoom] = useState(3);
+  const [mapCountries, setMapCountries] = useState([]);
+  const [casesType, setCasesType] = useState('cases');
 
   //Animation
   const AnimatedCard = animated(Card);
@@ -27,13 +30,11 @@ function App() {
   const [toggle2, setToggle2] = useState(false);
   const [toggle3, setToggle3] = useState(false);
 
-  const [casesType, setCasesType] = useState('total');
-
   const { x, color, fill, backgroundColor } = useSpring({ 
-    from: { x: 1 }, x: toggle && casesType === 'total' ? 1.2 : 1,
-    color: toggle && casesType === 'total' ? '#FF8B1A' : '#ADADAD',
-    backgroundColor: toggle && casesType === 'total' ? '#FAF2EA' : '#2C2C31',
-    fill: toggle && casesType === 'total' ? '#FF8B1A' : '#ADADAD',
+    from: { x: 1 }, x: toggle && casesType === 'cases' ? 1.2 : 1,
+    color: toggle && casesType === 'cases' ? '#FF8B1A' : '#ADADAD',
+    backgroundColor: toggle && casesType === 'cases' ? '#FAF2EA' : '#2C2C31',
+    fill: toggle && casesType === 'cases' ? '#FF8B1A' : '#ADADAD',
   });
 
   const { x2, color2, fill2, backgroundColor2 } = useSpring({ 
@@ -50,12 +51,14 @@ function App() {
     fill3: toggle3 && casesType === 'deaths' ? '#FF1A1A' : '#ADADAD'
   });
 
+
+
   const onClickAnimateCard1 = () => {
     setToggle(!toggle);
     setToggle2(false);
     setToggle3(false);
 
-    setCasesType('total');
+    setCasesType('cases');
   }
 
   const onClickAnimateCard2 = () => {
@@ -98,6 +101,7 @@ function App() {
           )
         })
         setCountries(countries);
+        setMapCountries(data);
       })
     }
     getCountriesData();
@@ -115,10 +119,16 @@ function App() {
       setCountryInfo(data);
       setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
       setMapZoom(4);
+      console.log(data.countryInfo.lat, data.countryInfo.long);
     })
   }
 
-  console.log(countryInfo);
+  window.onload = (event) => {
+    console.log('page is fully loaded');
+    onClickAnimateCard1();
+  };
+
+
 
   // const onClickSetCasesTypeTotal = () => {
   //   setCasesType('total');
@@ -205,7 +215,7 @@ function App() {
                 />
                 <AnimatedText sx={{ alignSelf: 'center', marginLeft: '8px' }} variant='text.caption-1'>Total Cases</AnimatedText>
               </Box>
-              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>{countryInfo.cases}</AnimatedHeading>
+              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>{prettyPrintStat(countryInfo.cases)}</AnimatedHeading>
             </Box>
           </AnimatedCard>
           
@@ -229,7 +239,7 @@ function App() {
                 />
                 <AnimatedText sx={{ alignSelf: 'center', marginLeft: '8px' }} variant='text.caption-1'>Recovered</AnimatedText>
               </Box>
-              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>{countryInfo.recovered}</AnimatedHeading>
+              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>{prettyPrintStat(countryInfo.recovered)}</AnimatedHeading>
             </Box>
           </AnimatedCard>
           
@@ -253,7 +263,7 @@ function App() {
                 />
                 <AnimatedText sx={{ alignSelf: 'center', marginLeft: '8px' }} variant='text.caption-1'>Deaths</AnimatedText>
               </Box>
-              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>{countryInfo.deaths}</AnimatedHeading>
+              <AnimatedHeading sx={{ marginTop: '8px' }} variant='text.heading.heading-4'>{prettyPrintStat(countryInfo.deaths)}</AnimatedHeading>
             </Box>
           </AnimatedCard>
         </Box>
@@ -262,9 +272,11 @@ function App() {
             marginTop: 4
           }}
         >
-          <WorldMap 
+          <WorldMap
+            countries={mapCountries}
             center={mapCenter}
             zoom={mapZoom}
+            casesType={casesType}
           />
         </Box>
       </Box>

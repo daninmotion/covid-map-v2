@@ -105,3 +105,22 @@ Responsive Images
 */
 
 img { max-width: 100%; height: auto; }
+
+
+
+
+/*
+
+Map css
+
+*/
+
+.custom-popup .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background: #2C2C31;
+  box-shadow: 0 0px 128px rgba(61,64,110, .30);
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  top: 8px;
+  right: 8px;
+}
